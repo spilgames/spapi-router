@@ -1,0 +1,5 @@
+log/
+deps/
+ebin/
+*.dump
+.eunit/

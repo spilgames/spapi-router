@@ -1,0 +1,9 @@
+{application, spapi_router,
+ [
+  {description, "Router to balance requests over nodes running workers."},
+  {vsn, git},
+  {registered, [spr_app, spr_ets_handler, spr_router, spr_sup]},
+  {applications, [ kernel, stdlib, lager ]},
+  {mod, { spr_app, []}},
+  {env, []}
+ ]}.

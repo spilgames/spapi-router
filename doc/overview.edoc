@@ -1,0 +1,21 @@
+@author Services Team
+@title SPAPI Router
+@doc
+'spapi_router' is responsible for keeping and ets table with the available nodes for balancing.
+
+'spapi_router' uses the following configuration keys (all of them mandatory):
+<li>services_monitor_interval_ms: How often the ets should be refreshed (in ms)</li>
+<li>hosts_monitor_interval_ms: How often the lists of hosts should be refreshed (in ms)</li>
+<li>host_names:A list of atoms with the full names where services will be fetched.
+    It will be defaulted to '127.0.0.1' and Hostname.Hostdomain
+    Instead of a fixed list of hosts, a tuple {file, File} referencing an Erlang consultable file can
+    be used</li>
+<li>interface_prefixes: A list of strings that will be used to match find nodes running
+interfaces</li>
+<li>worker_prefixes: A list of strings that will be used to match find nodes running
+services or adapters</li>
+<li>resources_callback_module: An atom meaning a module that must export two callbacks:
+new_resource/1 and lost_resource/1. These callbacks will be used by the router whenever a new node
+running an application App is found or lost, and both receive {App::atom(), node()} as parameter. The included
+behaviour spapi_router_callback should be used</li>
+
