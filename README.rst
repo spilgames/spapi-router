@@ -298,11 +298,8 @@ CloudI
 CloudI[2]_ is an open source cloud computing platform with a focus on
 connecting heterogenous technologies. It is similar to spapi-router in a way
 that it allows to create partially-connected application networks and abstracts
-call destinations. However, messaging is done via RabbitMQ instead of Erlang
-native message passing (Erlang can be used with CloudI in non-distributed
-mode). While CloudI would work, most of our application stack is Erlang and for
-this purpose we do not need other communication mechanisms besides native
-message passing.
+call destinations. While CloudI would work, most of our application stack is
+Erlang and for this purpose we are looking for a much simpler component.
 
 RELEASE
 -------
