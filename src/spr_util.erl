@@ -52,7 +52,7 @@ differences(L1, L2) ->
     {ordsets:to_list(Diff1), ordsets:to_list(Diff2)}.
 
 
-%% @doc Performs a lists parallel map. The output is warranteed to
+%% @doc Performs a lists parallel map. The output is guaranteed to
 %%  be ordered as the input. Note that exceptions will be caught
 %%  in the started processes, so they will appear in the output.
 %%
