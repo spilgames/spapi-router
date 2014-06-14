@@ -36,4 +36,5 @@ go:
 	ERL_LIBS=.:deps erl -name spapi_router -s spr_app ${EXTRA_ARGS}
 
 dialyzer:
-	dialyzer -c ebin/ -Wunmatched_returns -Werror_handling -Wrace_conditions
+	dialyzer -c ebin/ -Wunmatched_returns -Werror_handling -Wrace_conditions \
+	| fgrep -v -f dialyzer.ignore-warnings
