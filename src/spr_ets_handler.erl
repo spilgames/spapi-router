@@ -463,7 +463,7 @@ gather_nodes(HostNames, ReWorkerNodes) ->
                 lists:flatmap(fun({NodeName, _}) ->
                     case requested_hostname(NodeName, ReWorkerNodes) of
                         {true, _} ->
-                            [to_atom(spr_util:str(NodeName) ++ AtHostNameString)];
+                            [spr_util:atom(spr_util:str(NodeName) ++ AtHostNameString)];
                         {false, _} ->
                             []
                     end
@@ -729,11 +729,4 @@ get_host_names_config() ->
 %% @end
 default_hostnames() ->
     H = net_adm:localhost(),
-    [to_atom(H)].
-
-%% @private
-%% @doc Convert to atom, ensuring no new atoms are introduced.
--spec to_atom(list()) -> atom().
-%% @end
-to_atom(S) ->
-    try list_to_existing_atom(S) catch error:badarg -> list_to_atom(S) end.
+    [spr_util:atom(H)].
