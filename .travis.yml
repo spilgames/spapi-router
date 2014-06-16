@@ -1,0 +1,19 @@
+language: erlang
+
+before_install:
+       - wget https://raw.github.com/wiki/rebar/rebar/rebar
+       - chmod +x rebar
+
+script: "make get-deps compile test docs"
+
+otp_release:
+   - 17.0-rc1
+   - R16B03-1
+   - R16B02
+   - R16B01
+   - R15B03
+   - R15B02
+   - R15B01
+   - R14B04
+   - R14B03
+
