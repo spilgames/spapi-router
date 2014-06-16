@@ -1,0 +1,6 @@
+  estatsd:increment/1
+  estatsd:timing/2
+  lager:do_log/9
+  lager:md/0
+  lager:start/0
+  lager_config:get/2
