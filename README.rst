@@ -1,6 +1,8 @@
 Partially-connected Erlang clustering
 =====================================
 
+<a href="https://travis-ci.org/spilgames/spapi-router" target="_blank"><img src="https://travis-ci.org/spilgames/spapi-router.svg?branch=master"/></a>
+
 For the impatient
 =================
 
