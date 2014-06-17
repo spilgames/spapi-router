@@ -641,6 +641,12 @@ remove_nodes_routing_table({RemovedNode, AppsOnRemovedNode}, EtsResourceTable) -
         end, Callbacks),
     ok.
 
+make_folder(Resource, Tag, LogMsg) ->
+    fun(Node, Acc) ->
+            lager:info(LogMsg, [{Resource, Node}]),
+            [{Tag, {Resource, Node}} | Acc]
+    end.
+
 %% @doc returns current resources and updates ETS routing table
 -spec update_routing_table(resource_to_nodes(), [resource_name()], ets:tab()) -> [ atom() ].
 %% @private
@@ -648,25 +654,20 @@ update_routing_table(ResourceToNodes, OldResources, EtsResourceTable) ->
     CurrentResources = dict:fetch_keys(ResourceToNodes),
     {_AddedResources, RemovedResources} = spr_util:differences(CurrentResources, OldResources),
     % We update the ets for everything we have found on the network. We accumulate the callbacks
-    Callbacks1=lists:foldl( fun({Resource, NodesRunningResource}, CallbacksAcc) ->
+    Callbacks1 =
+        lists:foldl(fun({Resource, NodesRunningResource}, CallbacksAcc) ->
+                AddNew = make_folder(Resource, new, "Added resource: ~p"),
+                AddLost = make_folder(Resource, lost, "Lost resource: ~p"),
                 Cbs = case ets:lookup(EtsResourceTable, Resource) of
                     [] ->
-                        lists:foldl(fun (Node, Acc) ->
-                                lager:info("Added resource: ~p",[{Resource, Node}]),
-                                [{new, {Resource, Node}} | Acc]
-                            end, [], NodesRunningResource);
+                        lists:foldl(AddNew, [], NodesRunningResource);
                     [{Resource, OldNodesForResource}] ->
                         AllOldNodesForResource = [ N || {_, N} <- OldNodesForResource],
-                        {AddedNodes, RemovedNodes} = spr_util:differences(NodesRunningResource,
-                            AllOldNodesForResource),
-                        AddedCallbacks=lists:foldl(fun (Node, Acc) ->
-                                lager:info("Added resource: ~p",[{Resource, Node}]),
-                                [{new, {Resource, Node}}|Acc]
-                            end, [], AddedNodes),
-                        LostCallbacks=lists:foldl(fun (Node, Acc) ->
-                                lager:info("Lost resource: ~p",[{Resource, Node}]),
-                                [{lost, {Resource, Node}}|Acc]
-                            end, [], RemovedNodes),
+                        {AddedNodes, RemovedNodes} =
+                                  spr_util:differences(NodesRunningResource,
+                                                       AllOldNodesForResource),
+                        AddedCallbacks = lists:foldl(AddNew, [], AddedNodes),
+                        LostCallbacks = lists:foldl(AddLost, [], RemovedNodes),
                         AddedCallbacks ++ LostCallbacks
                 end,
                 NodesRunningResource2 = lists:map(fun(ANode) ->
