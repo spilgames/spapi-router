@@ -113,7 +113,12 @@ do_f(Parent, Ref, F, I) ->
 gather([Pid|T]=L, Ref, Timeout, Acc) ->
     receive
         {Pid, Ref, Ret} -> gather(T, Ref, Timeout, [Ret|Acc]);
-        {'EXIT', _, Reason} ->
+        % NOTE: This can only originate from non-worker processes, as they
+        % are spawned and not linked. There is also a catch for workers,
+        % so they just return {'EXIT', Reason} when they fail instead of sending a message.
+        {'EXIT', _SourcePID, normal} ->
+            gather(L, Ref, Timeout, Acc);
+        {'EXIT', _SourcePID, Reason} ->
             _ = [exit(P, Reason) || P <- L],
             wait_until_dead(L),
             exit(Reason)
