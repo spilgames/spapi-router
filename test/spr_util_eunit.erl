@@ -75,6 +75,21 @@ pmap_test_() ->
                 PossibleRemains = PidsAfter -- PidsBefore,
                 ?assertMatch([], [P || P <- PossibleRemains, is_process_alive(P)])
             end),
+        % Ensure that when a semi-related process exits cleanly we do not kill the workers
+        ?_test(begin
+                Input = lists:seq(1, 5),
+                Worker = fun (Value) -> timer:sleep(1000), Value end,
+                erlang:spawn_link(fun() -> timer:sleep(100), exit(self(), normal) end),
+                Results = spr_util:pmap(Worker, Input),
+                ?assertEqual(Input, Results)
+            end),
+        % Check that an error in the worker causes the error to be returned
+        ?_test(begin
+                Input = lists:seq(1, 5),
+                Worker = fun (1) -> exit(normal); (Value) -> Value end,
+                Results = spr_util:pmap(Worker, Input),
+                ?assertEqual([{'EXIT', normal}, 2, 3, 4, 5], Results)
+            end),
         %% The trap_exti flag for the caller is kept as it was
         ?_test(begin
                 Self=self(),
